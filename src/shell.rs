@@ -9,9 +9,10 @@ pub mod fshell {
     use rustyline::error::ReadlineError;
     use rustyline::{DefaultEditor, Result};
 
-    pub fn init_shell(shell_text : String) -> Result<()> {
+    pub fn init_shell() -> Result<()> {
         let mut rl = DefaultEditor::new()?;
         loop {
+            let shell_text = format!("$ `{}` % ", current_path());
             thread::sleep(time::Duration::from_millis(3));
             let readline = rl.readline(shell_text.as_str());
             // let mut commandout: String = String::new();
