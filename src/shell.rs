@@ -12,7 +12,7 @@ pub mod fshell {
     pub fn init_shell(shell_text : String) -> Result<()> {
         let mut rl = DefaultEditor::new()?;
         loop {
-            thread::sleep(time::Duration::from_millis(2));
+            thread::sleep(time::Duration::from_millis(3));
             let readline = rl.readline(shell_text.as_str());
             // let mut commandout: String = String::new();
             match readline {
