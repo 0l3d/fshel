@@ -1,25 +1,22 @@
+mod shell;
+
 use std::path::Path;
 use std::env;
 
-use rsbash::rash;
+use std::{thread, time};
+
+pub use shell::bash::*;
+
 use rustyline::error::ReadlineError;
 use rustyline::{DefaultEditor, Result};
 
 fn main() -> Result<()> {
     let mut rl = DefaultEditor::new()?;
     loop {
-        let (pwdcode, pwd, pwderr) = rash!("pwd").expect("ERROR RASH USING PWD"); 
-        if pwdcode != 0 {
-            print!("{}", pwdcode);
-        }
-        if pwderr != "" {
-            println!("{}", pwderr);
-        }
-        let shell_text = format!("$ {} ~ % ", pwd);
+        let shell_text = format!("$ ~ % ");
+        thread::sleep(time::Duration::from_millis(2));
         let readline = rl.readline(shell_text.as_str());
-        let mut val = 0;
-        let mut err : String = String::new();
-        let mut out : String = String::new();
+        // let mut commandout: String = String::new();
         match readline {
             Ok(line) => {
                 let command_split: Vec<&str> = line.split(" ").collect();
@@ -33,17 +30,8 @@ fn main() -> Result<()> {
                         }
                     },
                     "exit" => break,
-                    _ => (val, out, err) = rash!(line).expect("ERROR"),
+                    _ => run(line.to_string()),
                 };
-                if out != "" {
-                    print!("{}", out);
-                }
-                if err != "" {
-                    println!("{}", err);
-                }
-                if val != 0 {
-                    println!("Exit Code : {}", val);
-                }
             }
             Err(ReadlineError::Interrupted) => {
                 println!("CTRL-C");
