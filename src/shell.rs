@@ -9,10 +9,10 @@ pub mod fshell {
     use rustyline::error::ReadlineError;
     use rustyline::{DefaultEditor, Result};
 
-    pub fn init_shell() -> Result<()> {
+    pub fn init_shell(init_text : String) -> Result<()> {
         let mut rl = DefaultEditor::new()?;
         loop {
-            let shell_text = format!("$ `{}` % ", current_path());
+            let shell_text = init_text.clone();
             thread::sleep(time::Duration::from_millis(3));
             let readline = rl.readline(shell_text.as_str());
             // let mut commandout: String = String::new();
@@ -20,7 +20,7 @@ pub mod fshell {
                 Ok(line) => {
                     let command_split: Vec<&str> = line.split(" ").collect();
                     match command_split[0] {
-                        // * CUSTOM COMMANDS
+                        // CUSTOM COMMANDS
                         "cd" => {
                             if command_split.len() == 2 {
                                 let path = Path::new(command_split[1]);
@@ -30,7 +30,7 @@ pub mod fshell {
                             }
                         },
                         "exit" => break,
-                        // * SHELL CODE
+                        // SHELL CODE
                         _ => {
                             let shell_command_with_arguments: Vec<&str> = line.split(" ").collect();
                             let mut arguments: Vec<String> = vec![String::new(); 0];
