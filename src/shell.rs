@@ -13,9 +13,9 @@ pub mod fshell {
         let mut rl = DefaultEditor::new()?;
         loop {
             let shell_text = init_text.clone();
-            thread::sleep(time::Duration::from_millis(3));
+            thread::sleep(time::Duration::from_millis(4));
             let readline = rl.readline(shell_text.as_str());
-            // let mut commandout: String = String::new();
+
             match readline {
                 Ok(line) => {
                     let command_split: Vec<&str> = line.split(" ").collect();
@@ -30,7 +30,6 @@ pub mod fshell {
                             }
                         },
                         "exit" => break,
-                        // SHELL CODE
                         _ => {
                             let shell_command_with_arguments: Vec<&str> = line.split(" ").collect();
                             let mut arguments: Vec<String> = vec![String::new(); 0];
@@ -38,13 +37,14 @@ pub mod fshell {
                                 arguments.push(shell_command_with_arguments[i].to_string());
                             }
                             let _child = match Command::new(shell_command_with_arguments[0]).args(arguments).spawn() {
-                                Ok(child) => child,
+                                Ok(child) =>  {
+                                    child.wait_with_output()
+                                },
                                 Err(e) => {
                                     println!("ERROR: {}", e);
                                     continue;
                                 },
-                            };
-                                
+                            };  
                         },
                     };
                 }
@@ -61,15 +61,7 @@ pub mod fshell {
                     break;
                 }
             }
-        }
+        }    
         Ok(())
-    }
-    pub fn current_path() -> String {
-        let output = Command::new("sh")
-            .arg("-c")
-            .arg("pwd")
-            .output()
-            .expect("Failed to execute process");
-        return String::from_utf8(output.stdout).expect("failed");
     }
 }
